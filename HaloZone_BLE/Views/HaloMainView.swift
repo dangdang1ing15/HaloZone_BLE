@@ -6,8 +6,11 @@ struct HaloMainView: View {
     @State private var isEditing = false
     @Namespace private var animation
     @StateObject private var profileVM = ProfileViewModel()
+    @StateObject private var peripheralManager = BLEPeripheralManager()
 
-
+    
+    @State private var message = "방.금.모"
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -63,12 +66,20 @@ struct HaloMainView: View {
             .onChange(of: isHaloEnabled) { newValue in
                 if newValue {
                     timerManager.start()
-                    profileVM.updateIsAngel(newValue)
+                    profileVM.updateIsAngel(true)
+
+                    // 📤 peripheral 광고 시작
+                    peripheralManager.startAdvertising(message: message)
                 } else {
                     timerManager.stop()
-                    profileVM.updateIsAngel(newValue)
+                    profileVM.updateIsAngel(false)
+
+                    // 📤 peripheral 광고 중지
+                    peripheralManager.stopAdvertising()
                 }
             }
+
+
             .animation(.easeInOut, value: isEditing)
         }
     }
