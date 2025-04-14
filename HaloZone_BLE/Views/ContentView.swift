@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var peripheralManager = BLEPeripheralManager()
-    @StateObject private var centralManager = BLECentralManager()
+    @StateObject private var peripheralManager = BLEPeripheralManager.shared
+    @StateObject private var centralManager = BLECentralManager.shared
 
     @State private var isSending = false
     @State private var isReceiving = false

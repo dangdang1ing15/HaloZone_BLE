@@ -6,7 +6,7 @@ struct HaloMainView: View {
     @State private var isEditing = false
     @Namespace private var animation
     @StateObject private var profileVM = ProfileViewModel()
-    @StateObject private var peripheralManager = BLEPeripheralManager()
+    @StateObject private var peripheralManager = BLEPeripheralManager.shared
 
     
     @State private var message = "방.금.모"
