@@ -4,10 +4,26 @@ struct HaloMainView: View {
     @State private var isHaloEnabled = false
     @StateObject private var timerManager = HaloTimerManager()
     @State private var isEditing = false
+    @Namespace private var animation
+    @StateObject private var profileVM = ProfileViewModel()
+
 
     var body: some View {
         NavigationStack {
             ZStack {
+                if isEditing {
+                        Color.black.opacity(0.3) // 배경 딤 처리
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation {
+                                    isEditing = false
+                                }
+                            }
+
+                        EditProfileSheetView(profileVM: profileVM, isEditing: $isEditing, animation: animation)
+                            .transition(.move(edge: .bottom))
+                            .zIndex(2)
+                    }
                 (isHaloEnabled ? Color(red: 92/255, green: 92/255, blue: 92/255)
                                : Color(red: 248/255, green: 192/255, blue: 60/255))
                 .ignoresSafeArea()
@@ -35,17 +51,25 @@ struct HaloMainView: View {
 
                 VStack {
                     Spacer()
-                    NearbyHaloButtonView(isHaloEnabled: $isHaloEnabled,
-                                         isEditing: $isEditing)
+                    NearbyHaloButtonView(
+                        profileVM: profileVM,
+                        isHaloEnabled: $isHaloEnabled,
+                        isEditing: $isEditing
+                    )
+                    .id("\(profileVM.profile.lastmodified)-\(isHaloEnabled)")
+
                 }
             }
             .onChange(of: isHaloEnabled) { newValue in
                 if newValue {
                     timerManager.start()
+                    profileVM.updateIsAngel(newValue)
                 } else {
                     timerManager.stop()
+                    profileVM.updateIsAngel(newValue)
                 }
             }
+            .animation(.easeInOut, value: isEditing)
         }
     }
 

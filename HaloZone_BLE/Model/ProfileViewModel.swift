@@ -1,18 +1,42 @@
-//
-//  ProfileViewModel.swift
-//  HaloZone_BLE
-//
-//  Created by 성현 on 4/14/25.
-//
+import Foundation
+import Combine
 
-import SwiftUI
+class ProfileViewModel: ObservableObject {
+    @Published var profile: MyProfile = loadProfile()
 
-struct ProfileViewModel: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    func updateName(_ name: String) {
+        profile.name = name
+        profile.lastmodified = formattedNow()
+        saveProfile(profile)
     }
-}
 
-#Preview {
-    ProfileViewModel()
+    func updateMessage(_ message: String) {
+        var updated = profile
+        updated.message = message
+        updated.lastmodified = formattedNow()
+        profile = updated
+        saveProfile(profile)
+    }
+
+
+    func updateIsAngel(_ isAngel: Bool) {
+        var newProfile = profile
+        newProfile.isAngel = isAngel
+        newProfile.lastmodified = formattedNow()
+        profile = newProfile
+        saveProfile(newProfile)
+    }
+
+
+
+
+    func reload() {
+        profile = loadProfile()
+    }
+
+    private func formattedNow() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter.string(from: Date())
+    }
 }

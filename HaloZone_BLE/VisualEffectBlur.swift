@@ -1,8 +1,14 @@
-//
-//  VisualEffectBlur.swift
-//  HaloZone_BLE
-//
-//  Created by 성현 on 4/13/25.
-//
+import SwiftUI
+import UIKit
 
-import Foundation
+struct VisualEffectBlur: UIViewRepresentable {
+    var style: UIBlurEffect.Style = .systemUltraThinMaterial
+
+    func makeUIView(context: Context) -> UIVisualEffectView {
+        return UIVisualEffectView(effect: UIBlurEffect(style: style))
+    }
+
+    func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
+        // Nothing to update
+    }
+}

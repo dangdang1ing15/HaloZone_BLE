@@ -1,17 +1,18 @@
 import SwiftUI
 
 struct NearbyHaloButtonView: View {
-    @State private var showHalos = false
+    @ObservedObject var profileVM: ProfileViewModel
     @Binding var isHaloEnabled: Bool
-    @State private var navigateToEdit = false
     @Binding var isEditing: Bool
-    
+    @State private var showHalos = false
+
     var body: some View {
         VStack {
-            if isHaloEnabled {
-                // 헤일로존 활성화 상태일 때: 상태 메시지 형태
+            if profileVM.profile.isAngel && isHaloEnabled {
                 Button {
-                    navigateToEdit = true
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        isEditing = true
+                    }
                 } label: {
                     VStack(spacing: 4) {
                         Capsule()
@@ -19,12 +20,12 @@ struct NearbyHaloButtonView: View {
                             .foregroundColor(Color(.gray).opacity(0.5))
                             .padding(.bottom, 5)
                         
-                        Text("내 상태 메시지")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                        
-                        Text("상태메시지 작성시각 : 16:52")
+                        Text("\"\(profileVM.profile.message)\"")
                             .font(.subheadline)
+                            .foregroundColor(.white.opacity(0.9))
+
+                        Text("상태메시지 작성시각 : \(formatted(profileVM.profile.lastmodified))")
+                            .font(.caption)
                             .foregroundColor(.white.opacity(0.8))
                     }
                     .frame(height: 75)
@@ -34,24 +35,18 @@ struct NearbyHaloButtonView: View {
                     .cornerRadius(20)
                     .padding()
                 }
-                
-                NavigationLink(destination: EditProfile(), isActive: $navigateToEdit) {
-                    EmptyView()
-                }
-                
             } else {
-                // 기본 상태일 때: 내 주변 천사들
-                VStack{
+                VStack {
                     VStack {
                         Capsule()
                             .frame(width: 40, height: 5)
                             .foregroundColor(Color(red: 0.40, green: 0.40, blue: 0.40, opacity: 0.5))
                             .padding(.bottom, 5)
-                        
+
                         Text("내 주변 천사들")
                             .font(.headline)
                             .foregroundColor(.white)
-                        
+
                         Text("10미터 이내 3명")
                             .font(.subheadline)
                             .foregroundColor(.white.opacity(0.8))
@@ -65,10 +60,10 @@ struct NearbyHaloButtonView: View {
                     .onTapGesture {
                         showHalos.toggle()
                     }
-                    }
+                }
                 .sheet(isPresented: $showHalos) {
                     ZStack {
-                        NearbyHaloSheetView()
+                        NearbyHaloSheetView(profileVM: profileVM)
                     }
                     .presentationDetents([.fraction(9/10)])
                     .presentationDragIndicator(.visible)
@@ -77,7 +72,18 @@ struct NearbyHaloButtonView: View {
                     .preferredColorScheme(.dark)
                     .safeAreaPadding()
                 }
-                }
+
+            }
         }
+    }
+
+    private func formatted(_ dateString: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        guard let date = formatter.date(from: dateString) else { return "" }
+
+        let display = DateFormatter()
+        display.dateFormat = "HH:mm"
+        return display.string(from: date)
     }
 }
