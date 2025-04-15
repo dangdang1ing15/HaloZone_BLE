@@ -27,7 +27,7 @@ struct HaloZone_BLEApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HaloMainView()
+            ContentView()
         }
         .modelContainer(sharedModelContainer)
     }
