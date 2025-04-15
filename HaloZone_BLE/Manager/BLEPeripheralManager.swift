@@ -9,12 +9,7 @@
  import CoreBluetooth
  import UIKit
  
-final class BLEPeripheralManager: NSObject, ObservableObject {
-    static let shared = BLEPeripheralManager()
-        private override init() {
-            super.init()
-            // 초기화
-        }
+class BLEPeripheralManager: NSObject, ObservableObject {
      private var peripheralManager: CBPeripheralManager!
      private let serviceUUID = CBUUID(string: "1234")
      private let advertisedName = "HaloBLE"

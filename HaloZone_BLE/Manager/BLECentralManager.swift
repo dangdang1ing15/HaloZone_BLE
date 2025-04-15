@@ -3,7 +3,7 @@ import Foundation
  import UserNotifications
  import UIKit
  
- final class BLECentralManager: NSObject, ObservableObject {
+ class BLECentralManager: NSObject, ObservableObject {
      private var centralManager: CBCentralManager!
      private let targetServiceUUID = CBUUID(string: "1234")
      private let localDeviceID = UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
@@ -11,15 +11,6 @@ import Foundation
  
      @Published var discoveredMessages: [String] = []
      @Published var isScanningEnabled: Bool = true
-     
-     static let shared = BLECentralManager()  // Singleton 인스턴스
-
-         private override init() {
-             super.init()
-             self.centralManager = CBCentralManager(delegate: self, queue: nil, options: [
-                 CBCentralManagerOptionRestoreIdentifierKey: "HaloBLECentral"
-             ])
-         }
  
      func startScanning() {
          if centralManager == nil {

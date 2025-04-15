@@ -2,8 +2,8 @@ import SwiftUI
 
 struct NearbyHaloSheetView: View {
     @ObservedObject var profileVM: ProfileViewModel
-    @StateObject private var peripheralManager = BLEPeripheralManager.shared
-    @StateObject private var centralManager = BLECentralManager.shared
+    @StateObject private var peripheralManager = BLEPeripheralManager()
+    @StateObject private var centralManager = BLECentralManager()
 
     @State private var isSending = false
     @State private var isReceiving = false
