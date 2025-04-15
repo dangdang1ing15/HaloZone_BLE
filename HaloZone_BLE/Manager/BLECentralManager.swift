@@ -4,6 +4,7 @@ import UserNotifications
 import UIKit
 
 class BLECentralManager: NSObject, ObservableObject {
+    private var recentPeerTimestamps: [String: Date] = [:]
     private(set) var centralManager: CBCentralManager!
     private let targetServiceUUID = CBUUID(string: "1234")
     private let localDeviceID = UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
@@ -104,40 +105,60 @@ extension BLECentralManager: CBCentralManagerDelegate {
         }
     }
 
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
-                        advertisementData: [String : Any], rssi RSSI: NSNumber) {
+    func centralManager(_ central: CBCentralManager,
+                        didDiscover peripheral: CBPeripheral,
+                        advertisementData: [String : Any],
+                        rssi RSSI: NSNumber) {
+        
         guard let rawMessage = advertisementData[CBAdvertisementDataLocalNameKey] as? String else {
+            print("⚠️ 광고에 로컬 이름 없음 → 무시")
             return restartScanImmediately()
         }
-
+        
+        print("📝 수신된 메시지(raw): \(rawMessage)")
+        
         let components = rawMessage.components(separatedBy: "::")
         guard components.count == 3, components[0] == "halo" else {
+            print("⚠️ 메시지 형식 오류 (components): \(components)")
             return restartScanImmediately()
         }
-
-        guard RSSI.intValue > -60 else {
+        
+        guard RSSI.intValue > -70 else {
+            print("📶 RSSI 낮음 (\(RSSI.intValue)) → 무시")
             return restartScanImmediately()
         }
-
+        
         let senderID = components[1]
         let actualMessage = components[2]
-
-        guard senderID != localDeviceID, !receivedPeripheralIDs.contains(senderID) else {
+        
+        guard senderID != localDeviceID else {
+            print("🙈 자기 자신의 메시지 → 무시")
             return restartScanImmediately()
         }
 
-        receivedPeripheralIDs.insert(senderID)
-
-        print("📨 새로운 피어 감지: \(senderID) / 메시지: \(actualMessage)")
+        // 최근 수신 시간 기준 중복 수신 제한 (60초 이내 재수신 방지)
+        let now = Date()
+        if let lastSeen = recentPeerTimestamps[senderID],
+           now.timeIntervalSince(lastSeen) < 60 {
+            print("⏱️ 최근에 수신한 피어 (\(senderID)), 무시 (경과: \(now.timeIntervalSince(lastSeen))s)")
+            return restartScanImmediately()
+        }
+        recentPeerTimestamps[senderID] = now
+        
+        // 최종 유효 메시지 처리
+        print("📨 새로운 피어 감지: \(senderID)")
+        print("💬 메시지: \(actualMessage)")
+        
         DispatchQueue.main.async {
             self.discoveredMessages.append("\(senderID): \(actualMessage)")
             self.triggerLocalNotification(with: actualMessage)
         }
 
-        // 1초 후 재스캔
+        // 스캔 일시 중단 후 재시작
         centralManager.stopScan()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.startScanning()
         }
     }
+
 }
