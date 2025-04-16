@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HaloEnableButtonView: View {
     @Binding var isHaloEnabled: Bool
-
+    
     var body: some View {
         Button(action: {
             isHaloEnabled.toggle()

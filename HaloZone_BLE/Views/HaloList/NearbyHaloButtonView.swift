@@ -1,10 +1,12 @@
 import SwiftUI
 
 struct NearbyHaloButtonView: View {
+    @State private var showHalos = false
     @ObservedObject var profileVM: ProfileViewModel
     @Binding var isHaloEnabled: Bool
     @Binding var isEditing: Bool
-    @State private var showHalos = false
+    @ObservedObject var peripheralManager: BLEPeripheralManager
+    @ObservedObject var centralManager: BLECentralManager
 
     var body: some View {
         VStack {
@@ -62,9 +64,11 @@ struct NearbyHaloButtonView: View {
                     }
                 }
                 .sheet(isPresented: $showHalos) {
-                    ZStack {
-                        NearbyHaloSheetView(profileVM: profileVM)
-                    }
+                    NearbyHaloSheetView(
+                           profileVM: profileVM,
+                           peripheralManager: peripheralManager,
+                           centralManager: centralManager
+                       )
                     .presentationDetents([.fraction(9/10)])
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(30)

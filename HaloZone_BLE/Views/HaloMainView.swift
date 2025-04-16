@@ -58,7 +58,9 @@ struct HaloMainView: View {
                     NearbyHaloButtonView(
                         profileVM: profileVM,
                         isHaloEnabled: $isHaloEnabled,
-                        isEditing: $isEditing
+                        isEditing: $isEditing,
+                        peripheralManager: peripheralManager,
+                        centralManager: centralManager
                     )
                     .id("\(profileVM.profile.lastmodified)-\(isHaloEnabled)")
                 }
