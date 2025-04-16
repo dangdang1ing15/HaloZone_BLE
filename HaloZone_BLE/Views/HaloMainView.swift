@@ -68,10 +68,14 @@ struct HaloMainView: View {
                     timerManager.start()
                     profileVM.updateIsAngel(true)
                     peripheralManager.startAdvertising(message: message)
+                    centralManager.isScanningEnabled = false
+                    centralManager.stopScanning()
                 } else {
                     timerManager.stop()
                     profileVM.updateIsAngel(false)
                     peripheralManager.stopAdvertising()
+                    centralManager.isScanningEnabled = true
+                    centralManager.startScanning()
                 }
             }
 
