@@ -11,6 +11,7 @@ import SwiftData
 @main
 struct HaloZone_BLEApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([

@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		090B9CC62DB338FF00D8EC79 /* api.plist in Resources */ = {isa = PBXBuildFile; fileRef = 090B9CC52DB338FF00D8EC79 /* api.plist */; };
+		090B9CCA2DB33E4A00D8EC79 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 090B9CC92DB33E4500D8EC79 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		098D1CF52DAA0CF000158F34 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		090B9CC52DB338FF00D8EC79 /* api.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = api.plist; sourceTree = "<group>"; };
+		090B9CC92DB33E4500D8EC79 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		098D1CE22DAA0CEF00158F34 /* HaloZone_BLE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HaloZone_BLE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		098D1CF42DAA0CF000158F34 /* HaloZone_BLETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HaloZone_BLETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		098D1CFE2DAA0CF000158F34 /* HaloZone_BLEUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HaloZone_BLEUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +82,8 @@
 		098D1CD92DAA0CEF00158F34 = {
 			isa = PBXGroup;
 			children = (
+				090B9CC52DB338FF00D8EC79 /* api.plist */,
+				090B9CC92DB33E4500D8EC79 /* .gitignore */,
 				098D1CE42DAA0CEF00158F34 /* HaloZone_BLE */,
 				098D1CF72DAA0CF000158F34 /* HaloZone_BLETests */,
 				098D1D012DAA0CF000158F34 /* HaloZone_BLEUITests */,
@@ -212,6 +221,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				090B9CC62DB338FF00D8EC79 /* api.plist in Resources */,
+				090B9CCA2DB33E4A00D8EC79 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

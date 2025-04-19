@@ -56,7 +56,7 @@ struct NearbyHaloSheetView: View {
             MyProfileView(profileVM: profileVM)
                 .padding(.bottom, 10)
 
-            NearbyHaloListView()
+            NearbyHaloListView(viewModel: NearbyHaloListViewModel())
         }
 
     }
