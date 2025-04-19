@@ -4,22 +4,24 @@ struct NearbyHaloSheetView: View {
     @ObservedObject var profileVM: ProfileViewModel
     @ObservedObject var peripheralManager: BLEPeripheralManager
     @ObservedObject var centralManager: BLECentralManager
+    
+    @StateObject private var viewModel = NearbyHaloListViewModel()
 
     @State private var isActivated = true
     @State private var message = "HaloZone에서 안녕하세요!"
     @State var isAngel = false
     @State private var showPopover = false
+    @State private var reloadNearbyList = false
 
     
     var body: some View {
         VStack {
             HStack {
                 Button(action: {
-                    // 기능 없음
+                    viewModel.syncWithServer()
                 }) {
-                    Image(systemName: "arrow.trianglehead.counterclockwise.rotate.90")
+                    Image(systemName: "arrow.clockwise.circle.fill")
                         .font(.title2)
-                        .foregroundColor(.primary)
                 }
 
                 Spacer()
@@ -28,7 +30,7 @@ struct NearbyHaloSheetView: View {
                     Text("내 주변 천사들")
                         .font(.headline)
 
-                    Text("10미터 이내 3명")
+                    Text("10미터 이내 \(viewModel.profiles.count)명")
                         .font(.subheadline)
                 }
 
@@ -56,7 +58,7 @@ struct NearbyHaloSheetView: View {
             MyProfileView(profileVM: profileVM)
                 .padding(.bottom, 10)
 
-            NearbyHaloListView(viewModel: NearbyHaloListViewModel())
+            NearbyHaloListView(viewModel: viewModel)
         }
 
     }

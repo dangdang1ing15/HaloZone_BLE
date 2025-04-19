@@ -4,6 +4,7 @@ struct MyProfile: Codable {
     var name: String
     var message: String
     var isAngel: Bool
+    var userHash: String
     var lastmodified: String
 }
 
@@ -28,7 +29,7 @@ func loadProfile() -> MyProfile {
     guard let data = try? Data(contentsOf: url),
           let profile = try? JSONDecoder().decode(MyProfile.self, from: data) else {
         // 기본값 반환
-        return MyProfile(name: "nil", message: "메시지를 입력하세요", isAngel: false, lastmodified: "")
+        return MyProfile(name: "nil", message: "메시지를 입력하세요", isAngel: false, userHash: "0000", lastmodified: "")
     }
     return profile
 }

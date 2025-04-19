@@ -40,7 +40,6 @@ struct InitialProfileSetupView: View {
 
     func registerProfile() {
         let fixedMessage = "초기 상태메시지입니다."
-
         let profile: [String: Any] = [
             "userHash": userHash,
             "nickname": name,
@@ -55,7 +54,7 @@ struct InitialProfileSetupView: View {
             return
         }
 
-        var request = URLRequest(url: url) // 🔧 여기서 try? 제거
+        var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(Secrets.haloAPIKey, forHTTPHeaderField: "x-api-key")
@@ -65,15 +64,14 @@ struct InitialProfileSetupView: View {
             if let httpResponse = response as? HTTPURLResponse {
                 print("🌐 응답 코드: \(httpResponse.statusCode)")
                 if (200...299).contains(httpResponse.statusCode) {
-                    saveProfile(MyProfile(name: name, message: fixedMessage, isAngel: false, lastmodified: formattedNow()))
-                    DispatchQueue.main.async {
+                    saveProfile(MyProfile(name: name, message: fixedMessage, isAngel: false, userHash: userHash, lastmodified: formattedNow()))
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        BLEActivationCoordinator.shared.activate()
                         isProfileInitialized = true
                     }
                 } else {
                     print("❌ 프로필 등록 실패, 상태 코드: \(httpResponse.statusCode)")
                 }
-            } else {
-                print("❌ 응답 파싱 실패")
             }
         }.resume()
     }

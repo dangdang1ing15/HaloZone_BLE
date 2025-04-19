@@ -23,13 +23,3 @@ struct NearbyHaloProfileView: View {
         .padding(.bottom, 10)
     }
 }
-
-#Preview {
-    // 예시로 loadHaloProfiles()의 첫번째 데이터를 사용
-    if let sampleProfile = loadHaloProfiles().first {
-        NearbyHaloProfileView(profile: sampleProfile)
-    } else {
-        // 데이터가 없으면 기본값 사용
-        NearbyHaloProfileView(profile: HaloProfile(name: "Sample", message: "Sample Message", isAngel: false))
-    }
-}

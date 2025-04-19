@@ -7,6 +7,7 @@ struct NearbyHaloButtonView: View {
     @Binding var isEditing: Bool
     @ObservedObject var peripheralManager: BLEPeripheralManager
     @ObservedObject var centralManager: BLECentralManager
+    @StateObject private var viewModel = NearbyHaloListViewModel()
 
     var body: some View {
         VStack {
@@ -49,7 +50,7 @@ struct NearbyHaloButtonView: View {
                             .font(.headline)
                             .foregroundColor(.white)
 
-                        Text("10미터 이내 3명")
+                        Text("10미터 이내 \(viewModel.profiles.count)명")
                             .font(.subheadline)
                             .foregroundColor(.white.opacity(0.8))
                     }

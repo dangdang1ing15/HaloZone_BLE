@@ -1,19 +1,39 @@
 import Foundation
+import Combine
 
 class NearbyHaloListViewModel: ObservableObject {
-    @Published var profiles: [ServerProfile] = []
+    @Published var profiles: [HaloProfile] = []
 
-    func loadProfiles(from hashes: [String]) {
-        ProfileAPIService.shared.fetchProfiles(for: hashes) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let loaded):
-                    self.profiles = loaded
-                case .failure(let error):
-                    print("❌ 프로필 로딩 실패: \(error)")
-                    self.profiles = []
+    private var timer: Timer?
+    private let refreshInterval: TimeInterval = 15 * 60 // 15분
+
+    init() {
+        load()
+        startAutoRefresh()
+    }
+
+    func load() {
+        profiles = loadNearbyProfiles()
+        print("🔁 Nearby 프로필 로드 완료 (\(profiles.count)명)")
+    }
+
+    func startAutoRefresh() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: refreshInterval, repeats: true) { [weak self] _ in
+            print("⏰ 자동 새로고침 실행")
+            self?.load()
+        }
+    }
+    
+    func syncWithServer() {
+            syncNearbyProfilesFromServer {
+                DispatchQueue.main.async {
+                    self.load()
                 }
             }
         }
+    
+    deinit {
+        timer?.invalidate()
     }
 }

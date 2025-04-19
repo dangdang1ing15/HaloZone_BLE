@@ -7,7 +7,8 @@ struct HaloMainView: View {
     @Namespace private var animation
     @StateObject private var profileVM = ProfileViewModel()
     @StateObject private var peripheralManager = BLEPeripheralManager()
-    @StateObject private var centralManager = BLECentralManager() // ✅ 추가
+    @StateObject private var centralManager = BLECentralManager()
+    @ObservedObject var bleCoordinator = BLEActivationCoordinator.shared
 
     @State private var message = "방.금.모"
     
@@ -82,8 +83,19 @@ struct HaloMainView: View {
             }
 
             .onAppear {
-                centralManager.isScanningEnabled = true
-                centralManager.startScanning()
+                if bleCoordinator.shouldStartBLE {
+                    centralManager.isScanningEnabled = true
+                    centralManager.startScanning()
+                } else {
+                    print("⏳ BLE 대기 중")
+                }
+            }
+
+            .onChange(of: bleCoordinator.shouldStartBLE) { ready in
+                if ready {
+                    centralManager.isScanningEnabled = true
+                    centralManager.startScanning()
+                }
             }
 
             .animation(.easeInOut, value: isEditing)

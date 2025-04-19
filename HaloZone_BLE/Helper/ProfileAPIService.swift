@@ -1,14 +1,5 @@
 import Foundation
 
-struct ServerProfile: Codable, Identifiable {
-    var id: String { userHash }
-    let userHash: String
-    let nickname: String
-    let isHaloEnabled: Bool
-    let statusMessage: String
-    let timestamp: String
-}
-
 class ProfileAPIService {
     static let shared = ProfileAPIService()
 

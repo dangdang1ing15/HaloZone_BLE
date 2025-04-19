@@ -3,6 +3,7 @@ import CoreBluetooth
 import UIKit
 
 class BLEPeripheralManager: NSObject, ObservableObject {
+    let profile = loadProfile()
     private var peripheralManager: CBPeripheralManager!
     private let serviceUUID = CBUUID(string: "1234")
     private let advertisedName = "HaloBLE"
@@ -17,7 +18,7 @@ class BLEPeripheralManager: NSObject, ObservableObject {
     }
     
     func startAdvertising(message: String) {
-        let formattedMessage = "halo::\(deviceHash)::\(message)"
+        let formattedMessage = "halo::\(profile.userHash)::\(message)"
         self.messageToBroadcast = formattedMessage
         peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
     }
