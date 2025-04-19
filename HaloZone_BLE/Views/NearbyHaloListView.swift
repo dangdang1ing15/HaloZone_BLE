@@ -13,5 +13,14 @@ struct NearbyHaloListView: View {
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .background(.thinMaterial)
+        .frame(maxWidth: .infinity)
+        .cornerRadius(20)
     }
+}
+
+
+#Preview {
+    @Previewable var viewModel = NearbyHaloListViewModel()
+    
+    NearbyHaloListView(viewModel: viewModel)
 }

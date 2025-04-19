@@ -8,6 +8,12 @@ struct NearbyHaloButtonView: View {
     @ObservedObject var peripheralManager: BLEPeripheralManager
     @ObservedObject var centralManager: BLECentralManager
     @StateObject private var viewModel = NearbyHaloListViewModel()
+    @GestureState private var dragOffset: CGFloat = 0
+
+    var sheetScale: CGFloat {
+        let drag = min(dragOffset, 150)
+        return max(0.94, 1.0 - drag / 1000) // 최대 6% 축소
+    }
 
     var body: some View {
         VStack {
@@ -66,18 +72,25 @@ struct NearbyHaloButtonView: View {
                 }
                 .sheet(isPresented: $showHalos) {
                     NearbyHaloSheetView(
-                           profileVM: profileVM,
-                           peripheralManager: peripheralManager,
-                           centralManager: centralManager
-                       )
-                    .presentationDetents([.fraction(9/10)])
+                        profileVM: profileVM,
+                        peripheralManager: peripheralManager,
+                        centralManager: centralManager,
+                        scale: sheetScale // ✅ 전달
+                    )
+                    .presentationDetents([.fraction(0.9)])
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(30)
+                    .presentationContentInteraction(.resizes)
                     .presentationBackground(.thinMaterial)
                     .preferredColorScheme(.dark)
                     .safeAreaPadding()
                 }
-
+                .gesture(
+                    DragGesture()
+                        .updating($dragOffset) { value, state, _ in
+                            state = value.translation.height
+                        }
+                )
             }
         }
     }

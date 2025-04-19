@@ -12,7 +12,8 @@ struct NearbyHaloSheetView: View {
     @State var isAngel = false
     @State private var showPopover = false
     @State private var reloadNearbyList = false
-
+    
+    var scale: CGFloat = 1.0
     
     var body: some View {
         VStack {
@@ -22,6 +23,7 @@ struct NearbyHaloSheetView: View {
                 }) {
                     Image(systemName: "arrow.clockwise.circle.fill")
                         .font(.title2)
+                        .foregroundColor(.primary)
                 }
 
                 Spacer()
@@ -60,6 +62,5 @@ struct NearbyHaloSheetView: View {
 
             NearbyHaloListView(viewModel: viewModel)
         }
-
     }
 }
