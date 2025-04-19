@@ -11,6 +11,7 @@ import SwiftData
 @main
 struct HaloZone_BLEApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @AppStorage("isProfileInitialized") var isProfileInitialized = false
 
     
     var sharedModelContainer: ModelContainer = {
@@ -27,9 +28,12 @@ struct HaloZone_BLEApp: App {
     }()
 
     var body: some Scene {
-        WindowGroup {
-            HaloMainView()
+            WindowGroup {
+                if isProfileInitialized {
+                    HaloMainView()
+                } else {
+                    InitialProfileSetupView(isProfileInitialized: $isProfileInitialized)
+                }
+            }
         }
-        .modelContainer(sharedModelContainer)
-    }
 }
