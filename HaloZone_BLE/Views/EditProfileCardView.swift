@@ -8,13 +8,10 @@ struct EditProfileCardView: View {
     @State private var message: String = ""
     @FocusState private var isMessageFocused: Bool
     
-    func dismissWithAnimation() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            withAnimation(.easeOut(duration: 0.3)) {
-                isEditing = false
-            }
+    private func dismissWithAnimation() {
+        withAnimation(.easeInOut(duration: 0.35)) {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            isEditing = false
         }
     }
 

@@ -2,8 +2,6 @@ import SwiftUI
 
 struct NearbyHaloButtonView: View {
     @State private var showHalos = false
-    @State private var showEditView = false
-
     @ObservedObject var profileVM: ProfileViewModel
     @Binding var isHaloEnabled: Bool
     @Binding var isEditing: Bool
@@ -17,8 +15,8 @@ struct NearbyHaloButtonView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack {
+                // ✅ 조건 분기
                 if profileVM.profile.isAngel && isHaloEnabled {
-                    // ✅ 상태 메시지 뷰
                     VStack(spacing: 4) {
                         Capsule()
                             .frame(width: 40, height: 5)
@@ -33,13 +31,14 @@ struct NearbyHaloButtonView: View {
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.8))
                     }
-                    .frame(height: 75)
+                    .frame(height: isEditing ? 120 : 75) // ✅ 부풀기
                     .frame(maxWidth: .infinity)
                     .background(.thinMaterial)
                     .preferredColorScheme(.dark)
                     .cornerRadius(20)
                     .padding()
                     .scaleEffect(isPressed ? 1.05 : 1.0)
+                    .animation(.easeInOut(duration: 0.35), value: isEditing)
                     .gesture(
                         DragGesture(minimumDistance: 10)
                             .updating($dragOffset) { value, state, _ in
@@ -53,15 +52,13 @@ struct NearbyHaloButtonView: View {
 
                                 if value.translation.height < -50 {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                    print("➡️ isEditing ON")
-                                    withAnimation(.easeInOut) {
-                                        isEditing = true // ✅ 편집 시트 표시
+                                    withAnimation(.easeInOut(duration: 0.35)) {
+                                        isEditing = true
                                     }
                                 }
                             }
                     )
                 } else {
-                    // ✅ "내 주변 천사들" 뷰
                     VStack(spacing: 4) {
                         Capsule()
                             .frame(width: 40, height: 5)
@@ -97,7 +94,7 @@ struct NearbyHaloButtonView: View {
                                 if value.translation.height < -50 {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     withAnimation {
-                                        showHalos = true // ✅ 주변 목록 뷰 표시
+                                        showHalos = true
                                     }
                                 }
                             }
@@ -105,6 +102,7 @@ struct NearbyHaloButtonView: View {
                 }
             }
 
+            // ✅ 주변 목록 뷰
             if showHalos {
                 NearbyHaloSheetOverlayView(
                     profileVM: profileVM,

@@ -55,7 +55,13 @@ struct HaloMainView: View {
                     VStack {
                             Spacer()
                             EditProfileCardView(profileVM: profileVM, isEditing: $isEditing)
-                                .transition(.move(edge: .bottom).combined(with: .opacity))
+                                        .transition(
+                                        .asymmetric(
+                                            insertion: .move(edge: .bottom).combined(with: .opacity),
+                                            removal: .move(edge: .bottom).combined(with: .opacity)
+                                        )
+                                        )
+                                        .animation(.easeInOut(duration: 0.35), value: isEditing)
                                 .zIndex(2)
                         }
                 }
