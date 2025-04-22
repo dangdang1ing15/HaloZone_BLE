@@ -15,20 +15,6 @@ struct HaloMainView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                if isEditing {
-                    Color.black.opacity(0.3)
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            withAnimation {
-                                isEditing = false
-                            }
-                        }
-
-                    EditProfileSheetView(profileVM: profileVM, isEditing: $isEditing, animation: animation)
-                        .transition(.move(edge: .bottom))
-                        .zIndex(2)
-                }
-
                 (isHaloEnabled ? Color(red: 92/255, green: 92/255, blue: 92/255)
                                : Color(red: 248/255, green: 192/255, blue: 60/255))
                     .ignoresSafeArea()
@@ -64,6 +50,14 @@ struct HaloMainView: View {
                         centralManager: centralManager
                     )
                     .id("\(profileVM.profile.lastmodified)-\(isHaloEnabled)")
+                }
+                if isEditing {
+                    VStack {
+                            Spacer()
+                            EditProfileCardView(profileVM: profileVM, isEditing: $isEditing)
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
+                                .zIndex(2)
+                        }
                 }
             }
             .onChange(of: isHaloEnabled) { newValue in

@@ -14,10 +14,11 @@ struct HaloEnableButtonView: View {
         Button(action: {
             isHaloEnabled.toggle()
         }) {
-            Image(isHaloEnabled ? "HaloRing_Yellow" : "HaloRing_White")
-                .resizable()
+            LottieView(
+                    fileName: isHaloEnabled ? "HaloRing_Yellow" : "HaloRing_White",
+                    loopMode: .loop
+                )
                 .scaledToFit()
-                .frame(width: 300) // 크기는 상황에 맞게 조정
         }
     }
 }

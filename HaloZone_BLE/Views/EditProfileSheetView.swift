@@ -147,3 +147,13 @@ struct EditProfileSheetView: View {
         }.resume()
     }
 }
+
+extension AnyTransition {
+    static var swipeUpProfileEdit: AnyTransition {
+        AnyTransition
+            .asymmetric(
+                insertion: .move(edge: .bottom).combined(with: .opacity),
+                removal: .opacity
+            )
+    }
+}

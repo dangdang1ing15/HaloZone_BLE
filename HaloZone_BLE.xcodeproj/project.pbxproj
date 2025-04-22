@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		090B9CC62DB338FF00D8EC79 /* api.plist in Resources */ = {isa = PBXBuildFile; fileRef = 090B9CC52DB338FF00D8EC79 /* api.plist */; };
 		090B9CCA2DB33E4A00D8EC79 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 090B9CC92DB33E4500D8EC79 /* .gitignore */; };
+		095723532DB7BFF3002D42B7 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 095723522DB7BFF3002D42B7 /* Lottie */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				095723532DB7BFF3002D42B7 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +81,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		095723512DB7BFF3002D42B7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		098D1CD92DAA0CEF00158F34 = {
 			isa = PBXGroup;
 			children = (
@@ -87,6 +96,7 @@
 				098D1CE42DAA0CEF00158F34 /* HaloZone_BLE */,
 				098D1CF72DAA0CF000158F34 /* HaloZone_BLETests */,
 				098D1D012DAA0CF000158F34 /* HaloZone_BLEUITests */,
+				095723512DB7BFF3002D42B7 /* Frameworks */,
 				098D1CE32DAA0CEF00158F34 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,6 +132,7 @@
 			);
 			name = HaloZone_BLE;
 			packageProductDependencies = (
+				095723522DB7BFF3002D42B7 /* Lottie */,
 			);
 			productName = HaloZone_BLE;
 			productReference = 098D1CE22DAA0CEF00158F34 /* HaloZone_BLE.app */;
@@ -598,6 +609,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		0957234B2DB7BC4F002D42B7 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 095723442DB7B9B0002D42B7 /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
+		095723522DB7BFF3002D42B7 /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 095723442DB7B9B0002D42B7 /* XCRemoteSwiftPackageReference "lottie-spm" */;
 			productName = Lottie;
