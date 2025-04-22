@@ -6,18 +6,28 @@ struct NearbyHaloListView: View {
     var body: some View {
         GeometryReader { geometry in
             List {
-                ForEach(viewModel.profiles) { profile in
+                ForEach(viewModel.profiles.indices, id: \.self) { index in
+                    let profile = viewModel.profiles[index]
+
                     NearbyHaloProfileView(profile: profile)
                         .listRowBackground(Color.clear)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                viewModel.profiles.remove(at: index)
+                            } label: {
+                                Label("삭제", systemImage: "trash")
+                            }
+                        }
                 }
-                .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .background(.thinMaterial)
-            .frame(maxWidth: .infinity)
-            .cornerRadius(20)
-            .padding(.bottom, geometry.safeAreaInsets.bottom + 30) // ✅ safe area bottom 패딩
+            .cornerRadius(20) // ✅ safe area bottom 패딩
         }
+    }
+    
+    func delete(at offsets: IndexSet) {
+        viewModel.profiles.remove(atOffsets: offsets)
     }
 }
