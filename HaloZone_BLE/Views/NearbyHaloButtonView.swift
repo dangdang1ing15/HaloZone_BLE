@@ -9,65 +9,55 @@ struct NearbyHaloButtonView: View {
     @ObservedObject var centralManager: BLECentralManager
     @StateObject private var viewModel = NearbyHaloListViewModel()
 
+    @GestureState private var dragOffset: CGSize = .zero
+    @State private var isPressed: Bool = false
+
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack {
-                if profileVM.profile.isAngel && isHaloEnabled {
-                    Button {
-                        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                            isEditing = true
+                VStack {
+                    Capsule()
+                        .frame(width: 40, height: 5)
+                        .foregroundColor(Color.white.opacity(0.5))
+                        .padding(.bottom, 5)
+
+                    Text("내 주변 천사들")
+                        .font(.headline)
+                        .foregroundColor(.white)
+
+                    Text("10미터 이내 \(viewModel.profiles.count)명")
+                        .font(.subheadline)
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                .frame(height: 75)
+                .frame(maxWidth: .infinity)
+                .background(.thinMaterial)
+                .preferredColorScheme(.dark)
+                .cornerRadius(20)
+                .padding()
+                .scaleEffect(isPressed ? 1.05 : 1.0)
+                .gesture(
+                    DragGesture(minimumDistance: 10)
+                        .updating($dragOffset) { value, state, _ in
+                            state = value.translation
                         }
-                    } label: {
-                        VStack(spacing: 4) {
-                            Capsule()
-                                .frame(width: 40, height: 5)
-                                .foregroundColor(Color(.gray).opacity(0.5))
-                                .padding(.bottom, 5)
-
-                            Text("\"\(profileVM.profile.message)\"")
-                                .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.9))
-
-                            Text("상태메시지 작성시각 : \(formatted(profileVM.profile.lastmodified))")
-                                .font(.caption)
-                                .foregroundColor(.white.opacity(0.8))
-                        }
-                        .frame(height: 75)
-                        .frame(maxWidth: .infinity)
-                        .background(.thinMaterial)
-                        .preferredColorScheme(.dark)
-                        .cornerRadius(20)
-                        .padding()
-                    }
-                } else {
-                    VStack {
-                        VStack {
-                            Capsule()
-                                .frame(width: 40, height: 5)
-                                .foregroundColor(Color(red: 0.40, green: 0.40, blue: 0.40, opacity: 0.5))
-                                .padding(.bottom, 5)
-
-                            Text("내 주변 천사들")
-                                .font(.headline)
-                                .foregroundColor(.white)
-
-                            Text("10미터 이내 \(viewModel.profiles.count)명")
-                                .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.8))
-                        }
-                        .frame(height: 75)
-                        .frame(maxWidth: .infinity)
-                        .background(.thinMaterial)
-                        .preferredColorScheme(.dark)
-                        .cornerRadius(20)
-                        .padding()
-                        .onTapGesture {
-                            withAnimation {
-                                showHalos = true
+                        .onChanged { _ in
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                isPressed = true
                             }
                         }
-                    }
-                }
+                        .onEnded { value in
+                            withAnimation(.spring()) {
+                                isPressed = false
+                            }
+
+                            if value.translation.height < -50 {
+                                withAnimation(.spring()) {
+                                    showHalos = true
+                                }
+                            }
+                        }
+                )
             }
 
             if showHalos {
@@ -78,19 +68,16 @@ struct NearbyHaloButtonView: View {
                     isPresented: $showHalos
                 )
                 .ignoresSafeArea()
+                .background(
+                    Color.black.opacity(0.001)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation { showHalos = false }
+                        }
+                )
                 .transition(.move(edge: .bottom))
                 .animation(.spring(), value: showHalos)
             }
         }
-    }
-
-    private func formatted(_ dateString: String) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        guard let date = formatter.date(from: dateString) else { return "" }
-
-        let display = DateFormatter()
-        display.dateFormat = "HH:mm"
-        return display.string(from: date)
     }
 }
