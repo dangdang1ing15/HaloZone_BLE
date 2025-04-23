@@ -6,20 +6,10 @@ class BLEPeripheralManager: NSObject, ObservableObject {
     let profile = loadProfile()
     private var peripheralManager: CBPeripheralManager!
     private let serviceUUID = CBUUID(string: "1234")
-    private let advertisedName = "HaloBLE"
     private var messageToBroadcast: String = ""
-    private var deviceID: String {
-        UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
-    }
-    private var deviceHash: String {
-        let fullID = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
-        let hash = fullID.hashValue
-        return String(format: "%04X", abs(hash) % 0xFFFF)
-    }
-    
-    func startAdvertising(message: String) {
-        let formattedMessage = "halo::\(profile.userHash)::\(message)"
-        self.messageToBroadcast = formattedMessage
+
+    func startAdvertising() {
+        messageToBroadcast = profile.userHash
         peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
     }
     

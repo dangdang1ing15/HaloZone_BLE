@@ -12,7 +12,7 @@ class BLECentralManager: NSObject, ObservableObject {
 
     @Published var discoveredMessages: [String] = []
     @Published var isScanningEnabled: Bool = true
-    private var recentlyFetchedHashes: Set<String> = [] // ✅ 프로필 요청 중복 방지
+    private var recentlyFetchedHashes: Set<String> = [] // ✅ 중복 방지용
 
     override init() {
         super.init()
@@ -75,8 +75,8 @@ class BLECentralManager: NSObject, ObservableObject {
 
     private func triggerLocalNotification(with message: String) {
         let content = UNMutableNotificationContent()
-        content.title = "📥 주변에서 메시지 수신"
-        content.body = message
+        content.title = "HaloZone"
+        content.body = "주변 러너중에 대화를 원치 않는 사람이 있어요!"
         content.sound = .default
 
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
@@ -84,7 +84,6 @@ class BLECentralManager: NSObject, ObservableObject {
     }
 
     private func fetchProfileForDiscoveredHash(_ hash: String) {
-        // ✅ 중복 요청 방지
         guard !recentlyFetchedHashes.contains(hash) else { return }
         recentlyFetchedHashes.insert(hash)
 
@@ -128,56 +127,47 @@ extension BLECentralManager: CBCentralManagerDelegate {
             return restartScanImmediately()
         }
 
-        let components = rawMessage.components(separatedBy: "::")
-        guard components.count == 3, components[0] == "halo" else {
-            print("⚠️ 메시지 형식 오류: \(components)")
-            return restartScanImmediately()
-        }
+        let senderHash = rawMessage
 
         guard RSSI.intValue > -70 else {
             print("📶 RSSI 낮음 (\(RSSI.intValue)) → 무시")
             return restartScanImmediately()
         }
 
-        let senderID = components[1]
-        let actualMessage = components[2]
-
-        guard senderID != localDeviceID else {
+        guard senderHash != localDeviceID else {
             print("🙈 자기 자신의 메시지 → 무시")
             return restartScanImmediately()
         }
 
         let now = Date()
-        if let lastSeen = recentPeerTimestamps[senderID],
+        if let lastSeen = recentPeerTimestamps[senderHash],
            now.timeIntervalSince(lastSeen) < 60 {
-            print("⏱️ 최근 수신된 피어 (\(senderID)), 무시")
+            print("⏱️ 최근 수신된 피어 (\(senderHash)), 무시")
             return restartScanImmediately()
         }
 
-        recentPeerTimestamps[senderID] = now
+        recentPeerTimestamps[senderHash] = now
 
-        print("📨 새로운 피어 감지: \(senderID)")
+        print("📨 새로운 피어 감지: \(senderHash)")
 
-        // ✅ 메시지 저장 및 알림
         DispatchQueue.main.async {
-            self.discoveredMessages.append("\(senderID): \(actualMessage)")
-            self.triggerLocalNotification(with: actualMessage)
+            self.discoveredMessages.append(senderHash)
+            self.triggerLocalNotification(with: "새로운 해시 수신: \(senderHash)")
         }
 
-        // ✅ 안전하게 백그라운드에서 프로필 요청
-        fetchProfileForDiscoveredHash(senderID)
+        fetchProfileForDiscoveredHash(senderHash)
 
-        // ✅ BLE 스캔 재시작
         centralManager.stopScan()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.startScanning()
         }
     }
+
     func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
-            print("🔁 복원된 BLE 상태: \(dict)")
-            self.centralManager = central
-            if isScanningEnabled {
-                startScanning()
-            }
+        print("🔁 복원된 BLE 상태: \(dict)")
+        self.centralManager = central
+        if isScanningEnabled {
+            startScanning()
         }
+    }
 }

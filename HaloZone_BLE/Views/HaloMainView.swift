@@ -9,8 +9,6 @@ struct HaloMainView: View {
     @StateObject private var peripheralManager = BLEPeripheralManager()
     @StateObject private var centralManager = BLECentralManager()
     @ObservedObject var bleCoordinator = BLEActivationCoordinator.shared
-
-    @State private var message = "방.금.모"
     
     var body: some View {
         NavigationStack {
@@ -75,7 +73,7 @@ struct HaloMainView: View {
                 if newValue {
                     timerManager.start()
                     profileVM.updateIsAngel(true)
-                    peripheralManager.startAdvertising(message: message)
+                    peripheralManager.startAdvertising()
                     centralManager.isScanningEnabled = false
                     centralManager.stopScanning()
                 } else {
