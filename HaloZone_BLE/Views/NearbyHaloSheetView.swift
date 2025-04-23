@@ -21,9 +21,9 @@ struct NearbyHaloSheetView: View {
                 Button(action: {
                     viewModel.syncWithServer()
                 }) {
-                    Image(systemName: "arrow.clockwise.circle.fill")
-                        .font(.title2)
-                        .foregroundColor(.primary)
+                    Image("Arrow_Clockwise")
+                        .renderingMode(.template)
+                        .foregroundColor(.white)
                 }
 
                 Spacer()
@@ -49,9 +49,9 @@ struct NearbyHaloSheetView: View {
                         centralManager.stopScanning()
                     }
                 }) {
-                    Image(systemName: isActivated ? "ellipsis.circle.fill" : "ellipsis.circle")
-                        .font(.title2)
-                        .foregroundColor(.primary)
+                    Image(isActivated ? "Bluetooth_on" : "Bluetooth_off")
+                        .renderingMode(.template)
+                        .foregroundColor(.white)
                 }
             }
             .padding(.horizontal)

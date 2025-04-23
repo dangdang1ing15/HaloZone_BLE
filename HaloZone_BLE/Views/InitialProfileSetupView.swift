@@ -12,31 +12,73 @@ struct InitialProfileSetupView: View {
     @State private var name = ""
     @State private var userHash: String = ""
     @State private var isSubmitting = false
+    @FocusState private var isTextFieldFocused: Bool
 
     var body: some View {
-        VStack(spacing: 16) {
-            Text("프로필 설정")
-                .font(.title)
-                .padding(.top, 40)
+           ZStack {
+               Color(red: 248/255, green: 192/255, blue: 60/255) // 노란 배경
+                   .ignoresSafeArea()
 
-            TextField("닉네임", text: $name)
-                .textFieldStyle(.roundedBorder)
-                .padding(.horizontal)
+               VStack(spacing: 24) {
+                   Spacer().frame(height: 60)
 
-            if isSubmitting {
-                ProgressView("등록 중...")
-            } else {
-                Button("프로필 등록") {
-                    isSubmitting = true
-                    generateUniqueUserHash { hash in
-                        userHash = hash
-                        registerProfile()
-                    }
-                }
-                .padding()
-            }
-        }
-    }
+                   Text("HaloZone")
+                       .font(.title)
+                       .fontWeight(.bold)
+                       .foregroundColor(.white)
+                   GeometryReader { geometry in
+                       VStack {
+                           Spacer()
+                           LottieView(
+                            fileName: "HaloRing_init",
+                            loopMode: .loop
+                           )
+                           .frame(
+                            width: geometry.size.width * 1.3,
+                            height: geometry.size.width * 1.3
+                           )
+                           .offset(
+                            x: geometry.size.width * -0.17,
+                            y: geometry.size.height * 0
+                           )
+                           .clipped()
+                       }
+                       .frame(height: 300)
+                   }
+
+                   UnderlinedTextField(
+                       text: $name,
+                       placeholder: "이름을 입력해주세요",
+                       isFocused: $isTextFieldFocused
+                   )
+                   
+
+                   if isSubmitting {
+                       ProgressView("등록 중...")
+                           .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                   } else {
+                       Button(action: {
+                           isSubmitting = true
+                           generateUniqueUserHash { hash in
+                               userHash = hash
+                               registerProfile()
+                           }
+                       }) {
+                           Text("확인")
+                               .fontWeight(.bold)
+                               .foregroundColor(.white)
+                               .padding(.vertical, 12)
+                               .frame(maxWidth: .infinity)
+                               .background(Color(red: 144/255, green: 117/255, blue: 34/255)) // 약간 어두운 골드
+                               .cornerRadius(20)
+                               .padding(.horizontal, 80)
+                       }
+                   }
+                   Spacer()
+               }
+           }
+        
+       }
 
     func registerProfile() {
         let fixedMessage = "초기 상태메시지입니다."
@@ -123,4 +165,36 @@ struct InitialProfileSetupView: View {
         }
         tryGenerate()
     }
+}
+
+struct UnderlinedTextField: View {
+    @Binding var text: String
+    var placeholder: String
+    @FocusState.Binding var isFocused: Bool
+
+    var body: some View {
+        VStack(spacing: 4) {
+            TextField("", text: $text, prompt: Text(placeholder).foregroundColor(.white.opacity(0.8)))
+                .focused($isFocused)
+                .foregroundColor(.white)
+                .font(.system(size: 18, weight: .medium))
+                .multilineTextAlignment(.center)
+                .padding(.vertical, 10)
+                .background(Color.clear)
+                .overlay(
+                    Rectangle()
+                        .frame(height: 1)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16),
+                    alignment: .bottom
+                )
+        }
+        .padding(.horizontal, 32)
+    }
+}
+
+#Preview {
+    @AppStorage("isProfileInitialized") var isProfileInitialized = false
+    
+    InitialProfileSetupView(isProfileInitialized: $isProfileInitialized)
 }
