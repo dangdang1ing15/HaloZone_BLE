@@ -26,13 +26,18 @@ struct HaloMainView: View {
                         .foregroundColor(.white)
                         .padding(.top, 100)
 
-                    if isHaloEnabled {
-                        Text(timerManager.formattedTime())
-                            .font(.largeTitle)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .padding(.top, 8)
+                    Group {
+                        if isHaloEnabled {
+                            Text(timerManager.formattedTime())
+                        } else {
+                            Text("00:00:00")
+                                .hidden()
+                        }
                     }
+                    .font(.largeTitle)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .padding(.top, 8)
 
                     HaloEnableButtonView(isHaloEnabled: $isHaloEnabled)
                         .padding(.top, 60)

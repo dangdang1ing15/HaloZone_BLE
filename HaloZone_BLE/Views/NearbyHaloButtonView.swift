@@ -15,7 +15,6 @@ struct NearbyHaloButtonView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack {
-                // ✅ 조건 분기
                 if profileVM.profile.isAngel && isHaloEnabled {
                     VStack(spacing: 4) {
                         Capsule()
@@ -31,7 +30,7 @@ struct NearbyHaloButtonView: View {
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.8))
                     }
-                    .frame(height: isEditing ? 120 : 75) // ✅ 부풀기
+                    .frame(height: isEditing ? 120 : 75)
                     .frame(maxWidth: .infinity)
                     .background(.thinMaterial)
                     .preferredColorScheme(.dark)
