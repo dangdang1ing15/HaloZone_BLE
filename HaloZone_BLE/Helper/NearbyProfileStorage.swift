@@ -27,17 +27,14 @@ func getNearbyProfileURL() -> URL {
 func saveNearbyProfilesToLocal(_ newProfiles: [ServerProfile]) {
     let url = getNearbyProfileURL()
 
-    // ✅ 기존 로컬 JSON에서 HaloProfile 목록 불러오기
     let existing = loadNearbyProfiles()
-    let existingHashes = Set(existing.map { $0.userHash }) // 중복 제거 기준
+    let existingHashes = Set(existing.map { $0.userHash })
 
-    // ✅ 여기서 변환!
     let haloProfiles = newProfiles.map { $0.toHaloProfile }
-        .filter { !existingHashes.contains($0.userHash) } // 중복된 userHash 제거
+        .filter { !existingHashes.contains($0.userHash) }
 
     let merged = existing + haloProfiles
 
-    // ✅ 저장
     do {
         let data = try JSONEncoder().encode(merged)
         try data.write(to: url)
@@ -59,11 +56,11 @@ func loadNearbyProfiles() -> [HaloProfile] {
         let data = try Data(contentsOf: url)
         let decoded = try JSONDecoder().decode([HaloProfile].self, from: data)
         print("📄 디코딩된 프로필 수: \(decoded.count)")
-        printNearbyProfileJSON() // ✅ 여기!
+        printNearbyProfileJSON()
         return decoded
     } catch {
         print("❌ 디코딩 오류: \(error)")
-        printNearbyProfileJSON() // ✅ 실패 시 원본도 출력
+        printNearbyProfileJSON() 
         return []
     }
 }
